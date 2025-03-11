@@ -1,10 +1,9 @@
 import java.util.Scanner;
 
 public class Main {
-    // Максимальна кількість користувачів
     public static final int maxUsers = 15;
 
-    // Масиви для зберігання
+    // Масиви для 
     public static String[] usernames = new String[maxUsers];
     public static String[] passwords = new String[maxUsers];
 
@@ -36,7 +35,6 @@ public class Main {
                 continue;
             }
 
-            // Обробка вибору користувача
             if (choice == 1) {
                 addUser(scanner);
 

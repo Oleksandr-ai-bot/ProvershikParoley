@@ -219,7 +219,7 @@ public class Main {
     }
 }
 
-// База класу
+// База
 class Auth extends Exception {
     public Auth(String message) {
         super(message);

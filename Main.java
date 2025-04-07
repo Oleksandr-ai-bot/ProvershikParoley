@@ -1,36 +1,49 @@
 import java.util.Scanner;
 
 public class Main {
+    private static String[] names = new String[15];
+    private static String[] passw = new String[15];
+    private static String[] banPassw = new String[50];
+    private static int count = 0;
+    private static int banCount = 0;
+
     public static void main(String[] args) {
-        AuthSystem auth = new AuthSystem();
         Scanner scan = new Scanner(System.in);
         boolean True = true;
 
+        addBan("admin");
+        addBan("pass");
+        addBan("password");
+        addBan("qwerty");
+        addBan("ytrewq");
+
         while (True) {
             showMenu();
-            int choice = cHoice(scan, "Выберите действие: ");
+            int choice = cHoice(scan, "Виберіть дію: ");
 
             try {
                 switch (choice) {
                     case 1:
-                        addUser(scan, auth);
+                        addUser(scan);
                         break;
                     case 2:
-                        delUser(scan, auth);
+                        delUser(scan);
                         break;
                     case 3:
-                        importUser(scan, auth);
+                        importUser(scan);
                         break;
                     case 4:
-                        addBanPass(scan, auth);
+                        addBanPass(scan);
                         break;
                     case 0:
                         True = false;
                         break;
                     default:
-                        System.out.println("Неправильній вибір.");
+                        System.out.println("Неправильний вибір.");
                 }
-            } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+            } catch (IllegalArgumentException e) {
+                System.out.println("Помилка: " + e.getMessage());
+            } catch (IndexOutOfBoundsException e) {
                 System.out.println("Помилка: " + e.getMessage());
             }
         }
@@ -47,7 +60,7 @@ public class Main {
         System.out.println("0. Вихід");
     }
 
-    private static int cHoice(java.util.Scanner scan, String text) {
+    private static int cHoice(Scanner scan, String text) {
         while (true) {
             try {
                 System.out.print(text);
@@ -58,89 +71,73 @@ public class Main {
         }
     }
 
-    private static String namePas(java.util.Scanner scan, String text) {
+    private static String namePas(Scanner scan, String text) {
         System.out.print(text);
         return scan.nextLine();
     }
 
-    private static void addUser(java.util.Scanner scan, AuthSystem auth) {
+    private static void addUser(Scanner scan) {
         String name = namePas(scan, "Введіть ім'я:");
         String pass = namePas(scan, "Введіть пароль:");
 
-        auth.reg(name, pass);
+        reg(name, pass);
         System.out.println("Користувач доданий");
     }
 
-    private static void delUser(java.util.Scanner scan, AuthSystem auth) {
+    private static void delUser(Scanner scan) {
         String name = namePas(scan, "Введіть ім'я для видалення:");
 
-        auth.del(name);
-        System.out.println("Пользователь удален");
+        del(name);
+        System.out.println("Користувач видалений");
     }
 
-    private static void importUser(java.util.Scanner scan, AuthSystem auth) {
+    private static void importUser(Scanner scan) {
         String name = namePas(scan, "Введіть ім'я:");
         String pass = namePas(scan, "Введіть пароль:");
 
-        if (auth.login(name, pass)) {
+        if (login(name, pass)) {
             System.out.println("Вхід виконано успішно");
         } else {
             System.out.println("Неправильне ім'я або пароль");
         }
     }
 
-    private static void addBanPass(java.util.Scanner scan, AuthSystem auth) {
+    private static void addBanPass(Scanner scan) {
         String pass = namePas(scan, "Введіть заборонений пароль:");
-        auth.addBan(pass);
+        addBan(pass);
         System.out.println("Заборонений пароль додано");
     }
-}
 
-class AuthSystem {
-    private String[] names = new String[15];
-    private String[] passw = new String[15];
-    private String[] banPassw = new String[50];
-    private int count = 0;
-    private int banCount = 0;
-
-    public AuthSystem() {
-        addBan("admin");
-        addBan("pass");
-        addBan("password");
-        addBan("qwerty");
-        addBan("ytrewq");
-    }
-
-    public void addBan(String pass) {
+    public static void addBan(String pass) {
         if (banCount < banPassw.length) {
             banPassw[banCount] = pass;
             banCount++;
         }
     }
 
-    private void checkName(String name) {
+    private static void checkName(String name) {
         if (name == null) {
-            throw new NullPointerException("Ім'я не може бути null");
+            throw new NullPointerException("Ім'я не може бути null. Код помилки: https://qr-code.click/i/p/67f398dc3a179");
         }
 
         if (name.length() < 5) {
-            throw new IllegalArgumentException("Ім'я має бути не менше 5 символів");
+            throw new IllegalArgumentException("Ім'я має бути не менше 5 символів. Код помилки: https://qr-code.click/i/p/67f398dc3a179");
         }
 
         for (int i = 0; i < name.length(); i++) {
             if (name.charAt(i) == ' ') {
-                throw new IllegalArgumentException("Ім'я не повинно містити пробілів");
+                throw new IllegalArgumentException("Ім'я не повинно містити пробілів. Код помилки: https://qr-code.click/i/p/67f398dc3a179");
             }
         }
     }
 
-    private void checkPass(String pass) {
+    private static void checkPass(String pass) {
         if (pass == null) {
-            throw new NullPointerException("Пароль не може бути null");
+            throw new NullPointerException("Пароль не може бути null. Код помилки: https://qr-code.click/i/p/67f398dc3a179");
         }
 
         if (pass.length() < 10) {
-            throw new IllegalArgumentException("Пароль має бути не менше 10 символів");
+            throw new IllegalArgumentException("Пароль має бути не менше 10 символів. Код помилки: https://qr-code.click/i/p/67f398dc3a179");
         }
 
         boolean hasSpec = false;
@@ -150,49 +147,66 @@ class AuthSystem {
             char c = pass.charAt(i);
 
             if (c == ' ') {
-                throw new IllegalArgumentException("Пароль не повинен містити пробілів");
+                throw new IllegalArgumentException("Пароль не повинен містити пробілів. Код помилки: https://qr-code.click/i/p/67f398dc3a179");
             }
 
             if (c >= '0' && c <= '9') {
                 digits++;
             }
 
-            if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))) {
-                hasSpec = true;
+            if (!((c >= 'a') && (c <= 'z'))) {
+                if (!((c >= 'A') && (c <= 'Z'))) {
+                    if (!((c >= '0') && (c <= '9'))) {
+                        hasSpec = true;
+                    }
+                }
             }
         }
 
         if (!hasSpec) {
-            throw new IllegalArgumentException("Пароль повинен містити хоча б 1 спецсимвол");
+            throw new IllegalArgumentException("Пароль повинен містити хоча б 1 спецсимвол. Код помилки: https://qr-code.click/i/p/67f398dc3a179");
         }
 
         if (digits < 3) {
-            throw new IllegalArgumentException("Пароль повинен містити хоча б 3 цифри");
+            throw new IllegalArgumentException("Пароль повинен містити хоча б 3 цифри. Код помилки: https://qr-code.click/i/p/67f398dc3a179");
+        }
+
+        for (int i = 0; i < banCount; i++) {
+            if (banPassw[i] != null) {
+                if (pass.equals(banPassw[i])) {
+                    throw new IllegalArgumentException("Пароль заборонений. Код помилки: https://qr-code.click/i/p/67f398dc3a179");
+                }
+            }
         }
 
         String lowerPass = pass.toLowerCase();
         for (int i = 0; i < banCount; i++) {
-            if (banPassw[i] != null && lowerPass.contains(banPassw[i])) {
-                throw new IllegalArgumentException("Пароль містить заборонене слово: " + banPassw[i]);
+            if (banPassw[i] != null) {
+                String lowerBanPass = banPassw[i].toLowerCase();
+                if (lowerPass.contains(lowerBanPass)) {
+                    throw new IllegalArgumentException("Пароль містить заборонене слово: " + banPassw[i] + ". Код помилки: https://qr-code.click/i/p/67f398dc3a179");
+                }
             }
         }
     }
 
-    private int find(String name) {
+    private static int find(String name) {
         for (int i = 0; i < names.length; i++) {
-            if (names[i] != null && names[i].equals(name)) {
-                return i;
+            if (names[i] != null) {
+                if (names[i].equals(name)) {
+                    return i;
+                }
             }
         }
         return -1;
     }
 
-    public void reg(String name, String pass) {
+    public static void reg(String name, String pass) {
         checkName(name);
         checkPass(pass);
 
         if (find(name) != -1) {
-            throw new IndexOutOfBoundsException("Користувач \"" + name + "\" вже існує");
+            throw new IndexOutOfBoundsException("Користувач \"" + name + "\" вже існує. Код помилки: https://qr-code.click/i/p/67f398dc3a179");
         }
 
         boolean added = false;
@@ -207,14 +221,14 @@ class AuthSystem {
         }
 
         if (!added) {
-            throw new IndexOutOfBoundsException("Ліміт користувачів 15");
+            throw new IndexOutOfBoundsException("Ліміт користувачів 15. Код помилки: https://qr-code.click/i/p/67f398dc3a179");
         }
     }
 
-    public void del(String name) {
+    public static void del(String name) {
         int index = find(name);
         if (index == -1) {
-            throw new IndexOutOfBoundsException("Користувач \"" + name + "\" не знайдено");
+            throw new IndexOutOfBoundsException("Користувач \"" + name + "\" не знайдено. Код помилки: https://qr-code.click/i/p/67f398dc3a179");
         }
 
         names[index] = null;
@@ -222,8 +236,14 @@ class AuthSystem {
         count--;
     }
 
-    public boolean login(String name, String pass) {
+    public static boolean login(String name, String pass) {
         int index = find(name);
-        return (index != -1 && passw[index].equals(pass));
+        if (index == -1) {
+            return false;
+        }
+        if (passw[index].equals(pass)) {
+            return true;
+        }
+        return false;
     }
 }
